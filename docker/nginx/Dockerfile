@@ -4,4 +4,6 @@ WORKDIR /workspace
 
 ENV TZ=UTC
 
-COPY ./infra/docker/nginx/*.conf /etc/nginx/conf.d/
+ARG ARG_ENV
+
+COPY ./docker/nginx/${ARG_ENV}/*.conf /etc/nginx/conf.d/

@@ -13,3 +13,5 @@ cdk.out
 
 bin/parameter.ts
 cdk.context.json
+
+.DS_Store
