@@ -9,6 +9,8 @@ phases:
     commands:
       - REPOSITORY_URI=${ECR_URI}
       - IMAGE_TAG=${CODEBUILD_SOURCE_VERSION}
+      - echo "ECR_URI=${ECR_URI}"
+      - echo "CODEBUILD_SOURCE_VERSION=${CODEBUILD_SOURCE_VERSION}"
       - docker buildx build --build-arg ARG_ENV=aws --platform linux/amd64 -f ./docker/php/Dockerfile -t $REPOSITORY_URI:$IMAGE_TAG .
   post_build:
     commands:
