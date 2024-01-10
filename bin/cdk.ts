@@ -1,21 +1,21 @@
 // import * as cdk from '@aws-cdk/core';
 import * as cdk from 'aws-cdk-lib';
-import { stringToBoolean } from '../lib/common';
-import { SetupStack } from '../lib/stack/setup-stack';
 import { devParameter, prdParameter, type AppParameter } from './parameter';
+import { SetupStack } from '../lib/stack/setup-stack';
 import { LaravelAppStack } from '../lib/stack/laravel-app-stack';
+import { DeployStack } from '../lib/stack/deploy-stack';
 
 const app = new cdk.App();
 
 const envKeyContext = 'env';
-const setupKeyContext = 'setup';
+const taskKeyContext = 'task';
 
 const envKey = app.node.tryGetContext(envKeyContext) as string;
-const setupKey = app.node.tryGetContext(setupKeyContext) as string;
+const taskKey = app.node.tryGetContext(taskKeyContext) as string;
 
-if (envKey === undefined || setupKey === undefined)
+if (envKey === undefined || taskKey === undefined)
     throw new Error(
-        `Please context option. ex) cdk deploy -c ${envKey}={ dev | prod } -c ${setupKey}={ boolean }`,
+        `Please context option. ex) cdk deploy -c ${envKey}={ dev | prod } -c ${taskKey}={ setup | app | deploy }`,
     );
 
 const parameters = [devParameter, prdParameter];
@@ -23,12 +23,16 @@ const appParameter: AppParameter = parameters.filter(
     (obj: AppParameter) => obj.envName === envKey,
 )[0];
 
-if (stringToBoolean(setupKey)) {
+if (taskKey === 'setup') {
     new SetupStack(app, `${appParameter.envName}SetupStack`, {
         ...appParameter,
     });
-} else {
+} else if (taskKey === 'app') {
     new LaravelAppStack(app, `${appParameter.envName}LaravelAppStack`, {
+        ...appParameter,
+    });
+} else if (taskKey === 'deploy') {
+    new DeployStack(app, `${appParameter.envName}LaravelAppStack`, {
         ...appParameter,
     });
 }
