@@ -1,0 +1,33 @@
+{
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "standard-with-typescript",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "tsconfigRootDir": ".",
+    "project": ["./tsconfig.json"],
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "no-new": "off",
+    "@typescript-eslint/consistent-type-definitions": "off", // type or interfaceのどちらかには統一しない。
+    "@typescript-eslint/explicit-function-return-type": "off", // returnの型宣言の強制はしたくない。
+    "@typescript-eslint/strict-boolean-expressions": [
+      "error",
+      {
+        "allowNullableObject": true
+      }
+    ]
+  },
+  "overrides": [],
+  "settings": {}
+}

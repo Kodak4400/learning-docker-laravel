@@ -2,6 +2,8 @@ FROM php:8.2-fpm-bullseye AS base
 
 WORKDIR /workspace
 
+ARG ARG_ENV
+
 # timezone environment
 ENV TZ=UTC \
   # locale
@@ -36,21 +38,23 @@ RUN apt-get update \
 
 FROM base AS development
 
-COPY ./infra/docker/php/php.development.ini /usr/local/etc/php/php.ini
+COPY ./docker/php/${ARG_ENV}/php.development.ini /usr/local/etc/php/php.ini
 
 FROM development AS development-xdebug
 
 RUN pecl install xdebug && \
   docker-php-ext-enable xdebug
 
-COPY ./infra/docker/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+COPY ./docker/php/${ARG_ENV}/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 FROM base AS deploy
 
-COPY ./infra/docker/php/php.deploy.ini /usr/local/etc/php/php.ini
+COPY ./docker/php/${ARG_ENV}/php.deploy.ini /usr/local/etc/php/php.ini
 COPY ./src /workspace
 
-RUN composer install -q -n --no-ansi --no-dev --no-scripts --no-progress --prefer-dist \
+RUN composer install -q -n --no-ansi --no-dev --no-progress --prefer-dist \
   && chmod -R 777 storage bootstrap/cache \
   && php artisan optimize:clear \
   && php artisan optimize
+
+VOLUME ["/workspace"]
