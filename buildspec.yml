@@ -14,5 +14,5 @@ phases:
     commands:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo "[{\"name\":\"${CONTAINER_NAME}\",\"imageUri\":\"${REPOSITORY_URI}:${IMAGE_TAG}\"}]" > imagedefinitions.json
-  artifacts:
-    files: imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json
