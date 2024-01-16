@@ -1,20 +1,19 @@
 version: 0.2
 
-env:
-  variables:
-    DOCKER_BUILDKIT: "1"
-
 phases:
+  install:
+    runtime-versions:
+      docker: 18
   build:
     commands:
+      - echo $ECR_URI
+      - echo $CODEBUILD_SOURCE_VERSION
       - REPOSITORY_URI=${ECR_URI}
       - IMAGE_TAG=${CODEBUILD_SOURCE_VERSION}
-      - echo "ECR_URI=${ECR_URI}"
-      - echo "CODEBUILD_SOURCE_VERSION=${CODEBUILD_SOURCE_VERSION}"
       - docker buildx build --build-arg ARG_ENV=aws --platform linux/amd64 -f ./docker/php/Dockerfile -t $REPOSITORY_URI:$IMAGE_TAG .
   post_build:
     commands:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo "[{\"name\":\"${CONTAINER_NAME}\",\"imageUri\":\"${REPOSITORY_URI}:${IMAGE_TAG}\"}]" > imagedefinitions.json
+      - echo "[{\"name\":\"php\",\"imageUri\":\"${REPOSITORY_URI}:${IMAGE_TAG}\"}]" > imagedefinitions.json
 artifacts:
   files: imagedefinitions.json
