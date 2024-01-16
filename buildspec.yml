@@ -1,13 +1,16 @@
 version: 0.2
 
 phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
   build:
     commands:
-      - echo $ECR_URI
-      - echo $CODEBUILD_SOURCE_VERSION
       - REPOSITORY_URI=${ECR_URI}
       - IMAGE_TAG=${CODEBUILD_SOURCE_VERSION}
-      - docker build --build-arg ARG_ENV=aws --platform linux/amd64 -f ./docker/php/Dockerfile -t $REPOSITORY_URI:$IMAGE_TAG .
+      - docker buildx build --build-arg ARG_ENV=aws --platform linux/amd64 -f ./docker/php/Dockerfile -t $REPOSITORY_URI:$IMAGE_TAG .
   post_build:
     commands:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
