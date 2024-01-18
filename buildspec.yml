@@ -14,7 +14,7 @@ phases:
     commands:
       - REPOSITORY_URI=${ECR_URI}
       - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
-      - docker buildx build --platform linux/amd64 -f ./docker/php/Dockerfile -t $REPOSITORY_URI:$IMAGE_TAG .
+      - docker build --platform linux/amd64 -f ./docker/php/Dockerfile -t $REPOSITORY_URI:$IMAGE_TAG .
   post_build:
     commands:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
