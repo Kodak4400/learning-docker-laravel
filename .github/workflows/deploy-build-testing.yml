@@ -34,7 +34,7 @@ jobs:
 
       - name: Build and Push Docker image to ECR
         env:
-          REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: php
           IMAGE_TAG: ${{ github.event.inputs.tag }}
         run: |
