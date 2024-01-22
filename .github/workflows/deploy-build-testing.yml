@@ -8,6 +8,11 @@ on:
         required: true
         default: "latest"
 
+# allow use id-token
+permissions:
+  id-token: write # required!
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
