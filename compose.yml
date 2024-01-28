@@ -35,6 +35,12 @@ services:
       - DB_DATABASE=${DB_DATABASE:-laravel}
       - DB_USERNAME=${DB_USERNAME:-phper}
       - DB_PASSWORD=${DB_PASSWORD:-secret}
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: "localhost:24224"
+        fluentd-async-connect: "false"
+        tag: "php"
 
   web:
     build:
@@ -83,3 +89,20 @@ services:
         published: ${MAILPIT_PUBLISHED_PORT:-8025}
         protocol: tcp
         mode: host
+
+  fluent-bit:
+    build:
+      context: .
+      dockerfile: ./docker/fluent-bit/Dockerfile
+    volumes:
+      - type: bind
+        source: ./log
+        target: /log
+      # - type: bind
+      #   source: ./fluent-bit.conf
+      #   target: /fluent-bit/etc/fluent-bit.conf
+      # - type: bind
+      #   source: ./parsers.conf
+      #   target: /fluent-bit/etc/parsers.conf
+    ports:
+      - "24224:24224"
